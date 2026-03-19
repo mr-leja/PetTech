@@ -150,9 +150,9 @@
 
 ### Tareas de DEV
 - DEV-10-1: Realizar el endpoint PUT /solicitudes/{id}/decision que reciba la decisión (aprobada o rechazada) y actualice el estado en la tabla correspondiente
-- DEV-10-3: Cuando la decisión es "aprobada", actualizar el registro la columna estado de la mascota a "en proceso de adopción" junto con la actualizacion  de la columna de solicitud
-- DEV-10-4: Cuando la decisión es "rechazada", devolver la columna estado de la mascota a "disponible" para que pueda recibir nuevas solicitudes
-- DEV-10-5: Retornar error 500 por parte del servidor si se intenta cambiar la decisión de una solicitud que ya fue aprobada debido a que asi es la logica
+- DEV-10-2: Cuando la decisión es "aprobada", actualizar el registro de la columna estado de la tabla mascotas a "en proceso de adopción" junto con la actualizacion  de la columna estado de la tabla solicitudes_adopcion
+- DEV-10-3: Cuando la decisión es "rechazada", devolver la columna estado de la tabla mascotas a "disponible" para que pueda recibir nuevas solicitudes
+- DEV-10-4: Retornar error 409 por parte del servidor si se intenta cambiar la decisión de una solicitud que ya fue aprobada debido a que asi es la logica
 ### Tareas de QA
 - QA-10-1: Diseñar matriz de datos: solicitud pendiente aprobada, solicitud pendiente rechazada, solicitud ya aprobada que intenta cambiar de estado, ID de solicitud inexistente
 - QA-10-2: Automatizar con serenity el escenario: aprobación de solicitud pendiente — estado cambia a "aprobada" y mascota pasa a "en proceso"
@@ -194,9 +194,9 @@
 
 ### Tareas de DEV
 - DEV-13-1: Crear endpoint  de tipo GET /adopciones que nos devuelva el listado de adopciones con estado "adopción exitosa"
-- DEV-13-3: Configurar DTO de respuesta con los datos necesarios: nombre de la mascota, especie, fecha de adopción y nombre de la familia
-- DEV-13-4: Implementar paginación en el endpoint para que el sistema solo traiga los 10 primeros de cada pagina esto debido a que es mejor traer parte por parte que todo el resultado
-- DEV-13-5: Si la respuesta  es  vacía se debe retornar con mensaje informativo cuando el usuario no tiene adopciones en proceso
+- DEV-13-2: Configurar DTO de respuesta con los datos necesarios: nombre de la mascota, especie, fecha de adopción y nombre de la familia
+- DEV-13-3: Implementar paginación en el endpoint para que el sistema solo traiga los 10 primeros de cada pagina esto debido a que es mejor traer parte por parte que todo el resultado
+- DEV-13-4: Si la respuesta  es  vacía se debe retornar con mensaje informativo cuando el usuario no tiene adopciones en proceso
 
 ### Tareas de QA
 - QA-13-1: Diseñar matriz de datos: usuario con múltiples adopciones, usuario sin ninguna adopción, filtro aplicado a un usuario específico, listado general sin filtro
@@ -227,7 +227,7 @@
 ## HU-15 – Consultar calendario de vacunación (3 SP)
 
 ### Tareas de DEV
-- DEV-15-1: Crear el  endpoint de tipo GET /adopciones/{id}/calendario que retorne el calendario asociado a una adopción en formato pdf
+- DEV-15-1: Crear el  endpoint de tipo GET /adopciones/{id}/calendario que retorne el calendario asociado a una adopción  
 - DEV-15-2: Validar que la adopción referenciada exista y tenga estado "adopción exitosa" antes de retornar el calendario
 - DEV-15-3: Retornar mensaje renderizado en el frontend falta procesos por aprobar cuando la adopción está en estado "pendiente" o "aprobada" 
 - DEV-15-4: Retornar 404 con mensaje renderizado en el frontend cuando el usuario adoptante no tiene ninguna adopción registrada en el sistema
@@ -235,7 +235,7 @@
 ### Tareas de QA
 - QA-15-1: Diseñar matriz de datos: adopción confirmada con calendario generado, adopción en estado pendiente, usuario sin adopciones, ID de adopción inexistente
 - QA-15-2: Automatizar escenario: consulta exitosa — sistema retorna el calendario con las fechas sugeridas de vacunación
-- QA-15-3: Automatizar escenario: adopción en estado pendiente — sistema no muestra el calendario y 
+- QA-15-3: Automatizar escenario: adopción en estado pendiente — sistema no muestra el calendario con mensaje informativo
 - QA-15-4: Automatizar escenario: usuario sin adopción registrada — sistema deniega el acceso con mensaje que se entienda
 
 ---

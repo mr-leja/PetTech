@@ -141,10 +141,10 @@
 #### Scenario: Intento de registro sin campos obligatorios
 - **Given** que la familia no selecciona el tipo de vivienda o no indica el tamaño del hogar
 - **When** intenta guardar la información
-- **Then** el sistema muestra un mensaje con el siguinte texto: falta informacion faltante
+- **Then** el sistema muestra un mensaje con el siguinte texto: Los campos de tipo vivienda son obligatorios
 - **And** no actualiza el perfil con información incompleta
 
-#### Scenario: Registro con campos ya existentens a
+#### Scenario: Registro con campos ya registrados
 - **Given** que la familia intenta registrar nuevamente los campos
 - **When** intententa registrar la informacion
 - **Then** el sistema arroja un mensaje de alerta 
@@ -261,12 +261,21 @@
 **Quiero** visualizar la información de la familia y la mascota en una solicitud  
 **Para** analizar la viabilidad de la adopción  
 
+## Criterios de aceptacion
+
 ## Feature: Consulta de solicitud de adopción
 
 ### Scenario: Visualización de información completa  
 **Given** que existe una solicitud de adopción  
 **When** el administrador accede a su detalle  
 **Then** el sistema muestra la información de la familia y de la mascota  
+
+
+
+### Scenario: Intento de acceso a una solicitud inexistente  
+**Given** que un administrador intenta acceder al detalle de una solicitud mediante un ID que no existe  
+**When** el sistema procesa la peticion 
+**Then** el sistema muestra un mensaje informativo: "La solicitud consultada no existe o ha sido eliminada permanentemente"  
 
 ### Story Points HU-09
   - 3 puntos de estimacion
@@ -279,6 +288,8 @@
 **Como** administrador  
 **Quiero** aprobar o rechazar una solicitud de adopción  
 **Para** controlar el proceso de asignación de mascotas  
+
+## Criterios de aceptacion
 
 ## Feature: Gestión de decisión de solicitud  
 
@@ -305,12 +316,19 @@
 **Quiero** sugerir una mascota alternativa a una familia  
 **Para** mejorar la probabilidad de éxito en la adopción  
 
+## Criterios de aceptacion
+
 ## Feature: Sugerencia de mascota alternativa  
 
 ### Scenario: Registro de sugerencia  
 **Given** que el administrador identifica una mejor opción  
 **When** asigna una mascota sugerida a la familia  
 **Then** el sistema registra la sugerencia de adopción  
+
+### Scenario: Intento de sugerir una mascota no disponible
+**Given** que el administrador selecciona una mascota que ya está en proceso de adopción
+**When** registra la sugerencia para esa familia
+**Then** el sistema invalida la operación y manda un mensaje informativo: "La mascota seleccionada no se encuentra disponible para adopción"
 
 ### Story Points HU-11
   - 3 puntos de estimacion
@@ -333,6 +351,7 @@
 **Given** que existe una solicitud de adopción aprobada  
 **When** el administrador confirma la adopción  
 **Then** el estado de la solicitud cambia a "adopción exitosa"  
+
 
 ### Scenario: Registro de la fecha de adopción
 **Given** que el administrador confirma una adopción  
@@ -384,7 +403,7 @@
 
 ## HU-14 – Generar calendario de vacunas
 
-**Como** sistema  
+**Como** administrador  
 **Quiero** generar un calendario inicial de vacunación  
 **Para** orientar al adoptante en el cuidado de la mascota  
 
@@ -438,7 +457,7 @@
 ### Scenario: Acceso a calendario sin tener una adopción registrada
   **Given** que el usuario no tiene una adopción registrada
   **When** intenta acceder a la información de una mascota
-  **When** el sistema deniega el acceso al calendario de vacunación
+  **Then** el sistema deniega el acceso al calendario de vacunación
 
 
 
