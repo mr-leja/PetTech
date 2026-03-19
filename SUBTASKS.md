@@ -133,52 +133,109 @@
 
 ---
 
-## HU-09 – Evaluar Compatibilidad 
+## HU-09 – Consultar detalle de solicitud de adopción (3 SP)
 
 ### Tareas de DEV
-- [ ] DEV-n: [Escribe aquí tu subtarea técnica]
-
+- DEV-09-1: Exponer endpoint GET /solicitudes/{id} que retorne la información consolidada de la solicitud en formato json
+- DEV-09-2: Realizar JOIN entre la tabla solicitudes_adopcion, familias_adoptantes y mascotas para armar la respuesta en un objeto aplanado
+- DEV-09-3: Implementar respuesta 404 con mensaje el cual pueda ser de facil entendimiento desde el frontend
+- DEV-09-4: Implementar la vista para que solo el adminsitrador pueda ver las solicitudes correspondientes
 ### Tareas de QA
-- [ ] QA-n: [Escribe aquí qué probar o automatizar]
+- QA-09-1: Diseñar matriz de datos: solicitud existente con informacion completa de la  familia y mascota, entre otros datos relevantes
+- QA-09-2: Automatizar escenario: consulta exitosa — respuesta contiene información de la familia y de la mascota correctamente aplanada
+- QA-09-3: Automatizar escenario: ID inexistente — sistema retorna 404 con mensaje de facil entendimiento
+
+---
+## HU-10 – Registrar decisión sobre solicitud (5 SP)
+
+### Tareas de DEV
+- DEV-10-1: Realizar el endpoint PUT /solicitudes/{id}/decision que reciba la decisión (aprobada o rechazada) y actualice el estado en la tabla correspondiente
+- DEV-10-3: Cuando la decisión es "aprobada", actualizar el registro la columna estado de la mascota a "en proceso de adopción" junto con la actualizacion  de la columna de solicitud
+- DEV-10-4: Cuando la decisión es "rechazada", devolver la columna estado de la mascota a "disponible" para que pueda recibir nuevas solicitudes
+- DEV-10-5: Retornar error 500 por parte del servidor si se intenta cambiar la decisión de una solicitud que ya fue aprobada debido a que asi es la logica
+### Tareas de QA
+- QA-10-1: Diseñar matriz de datos: solicitud pendiente aprobada, solicitud pendiente rechazada, solicitud ya aprobada que intenta cambiar de estado, ID de solicitud inexistente
+- QA-10-2: Automatizar con serenity el escenario: aprobación de solicitud pendiente — estado cambia a "aprobada" y mascota pasa a "en proceso"
+- QA-10-3: Automatizar con serenity el escenario: rechazo de solicitud pendiente — estado cambia a "rechazada" y mascota vuelve a "disponible"
+- QA-10-4: Ejecutar una prueba exploratoria manual verificando que los estados de solicitud y mascota sigan el flujo correcto
 
 ---
 
-## HU-10 – Confirmar adopción 
+## HU-11 – Sugerir alternativa de adopción (3 SP)
 
 ### Tareas de DEV
-- [ ] DEV-n: [Escribe aquí tu subtarea técnica]
+- DEV-11-1: Crear tabla sugerencias_adopcion con los campos: id_solicitud (FK), id_mascota_sugerida (FK), fecha_sugerencia, motivo
+- DEV-11-2: Crear endpoint  de tipo POST /solicitudes/{id}/sugerencia que registre la mascota alternativa
+- DEV-11-3: Validar que la mascota sugerida exista en el sistema y esté en estado "disponible" antes de registrar la sugerencia caso contrario mandar un error que sea entendido por el administrador
 
 ### Tareas de QA
-- [ ] QA-n: [Escribe aquí qué probar o automatizar]
+- QA-11-1: Diseñar matriz de datos: solicitud existente con mascota disponible sugerida, mascota sugerida en estado "en proceso", ID de mascota sugerida que no existe, ID de solicitud inexistente
+- QA-11-2: Automatizar escenario: sugerencia exitosa — registro creado con los datos correctos de la solicitud y la mascota sugerida por el administrador
+- QA-11-3: Automatizar escenario: mascota sugerida no disponible — sistema rechaza el registro e informa el motivo con un mensaje que entienda el administrador
 
 ---
 
-## HU-11 – Visualizar adopciones realizadas 
+## HU-12 – Confirmar adopción (3 SP)
 
 ### Tareas de DEV
-- [ ] DEV-n: [Escribe aquí tu subtarea técnica]
+- DEV-12-1: Crear tabla adopciones con los campos: id_solicitud (FK), id_familia (FK), id_mascota (FK), fecha_adopcion, estado
+- DEV-12-2: Crear endpoint de tipo POST /adopciones que tome una solicitud en estado "aprobada"
+- DEV-12-3: Actualizar el estado de la solicitud a "adopción exitosa" y el estado de la mascota a "adoptada"
+- DEV-12-4: Retornar error si se intenta confirmar una adopción para una solicitud que no esté en estado "aprobada"
 
 ### Tareas de QA
-- [ ] QA-n: [Escribe aquí qué probar o automatizar]
+- QA-12-1: Diseñar matriz de datos: solicitud aprobada lista para confirmar, solicitud en estado "pendiente"
+- QA-12-2: Automatizar escenario: confirmación exitosa — registro en tabla adopciones con fecha, mascota pasa a "adoptada" y solicitud a "adopción exitosa"
+- QA-12-3: Automatizar escenario: intento de confirmar solicitud pendiente — sistema rechaza la operación con mensaje que entienda el administrador
 
 ---
 
-## HU-12 – Generar calendario de vacunas 
+## HU-13 – Visualizar adopciones realizadas (5 SP)
 
 ### Tareas de DEV
-- [ ] DEV-n: [Escribe aquí tu subtarea técnica]
+- DEV-13-1: Crear endpoint  de tipo GET /adopciones que nos devuelva el listado de adopciones con estado "adopción exitosa"
+- DEV-13-3: Configurar DTO de respuesta con los datos necesarios: nombre de la mascota, especie, fecha de adopción y nombre de la familia
+- DEV-13-4: Implementar paginación en el endpoint para que el sistema solo traiga los 10 primeros de cada pagina esto debido a que es mejor traer parte por parte que todo el resultado
+- DEV-13-5: Si la respuesta  es  vacía se debe retornar con mensaje informativo cuando el usuario no tiene adopciones en proceso
 
 ### Tareas de QA
-- [ ] QA-n: [Escribe aquí qué probar o automatizar]
+- QA-13-1: Diseñar matriz de datos: usuario con múltiples adopciones, usuario sin ninguna adopción, filtro aplicado a un usuario específico, listado general sin filtro
+- QA-13-2: Automatizar escenario: listado general — solo aparecen adopciones con estado "adopción exitosa"
+- QA-13-4: Automatizar escenario: usuario sin adopciones — sistema retorna respuesta vacía con mensaje informativo
+- QA-13-5: Verificar que la paginación funciona mediante una prueba exploratoria para que se muestre  el historial con 10 registros por limite
 
 ---
 
-## HU-13 – Consultar calendario 
+## HU-14 – Generar calendario de vacunas (8 SP)
 
 ### Tareas de DEV
-- [ ] DEV-n: [Escribe aquí tu subtarea técnica]
+- DEV-14-1: Crear tabla calendario_vacunacion con los campos: id_adopcion (FK), vacuna, fecha_sugerida, especie, estado
+- DEV-14-2: Implementar la lógica de negocio que define el protocolo de vacunación por especie: perros (Parvovirus, Moquillo, Rabia) y gatos (Panleucopenia, Calicivirus, Rabia)
+- DEV-14-3: Implementar la distinción por etapa de vida: cachorro (vacunas con refuerzos cada 3-4 semanas) vs adulto (refuerzos anuales o trianuales)
+- DEV-14-4: Considerar el historial de vacunación registrado en salud_mascota para no re-agendar vacunas ya aplicadas
+- DEV-14-5: Disparar la generación del calendario automáticamente al confirmar una adopción 
 
 ### Tareas de QA
-- [ ] QA-n: [Escribe aquí qué probar o automatizar]
+- QA-14-1: Diseñar matriz de datos: perro cachorro sin ninguna vacuna, perro adulto con vacunas parciales, gato sin historial, mascota con historial completo de vacunas, especie no reconocida por el sistema
+- QA-14-2: Automatizar escenario: perro cachorro sin vacunas — calendario incluye protocolo completo con fechas de refuerzo correctas
+- QA-14-3: Automatizar escenario: mascota con vacunas ya aplicadas — el sistema no duplica las vacunas existentes en el calendario
+- QA-14-4: Automatizar escenario: gato sin historial — calendario incluye el protocolo felino correspondiente
+- QA-14-5: Verificar que el calendario queda correctamente asociado al id_adopcion y no a otro registro
+
+---
+
+## HU-15 – Consultar calendario de vacunación (3 SP)
+
+### Tareas de DEV
+- DEV-15-1: Crear el  endpoint de tipo GET /adopciones/{id}/calendario que retorne el calendario asociado a una adopción en formato pdf
+- DEV-15-2: Validar que la adopción referenciada exista y tenga estado "adopción exitosa" antes de retornar el calendario
+- DEV-15-3: Retornar mensaje renderizado en el frontend falta procesos por aprobar cuando la adopción está en estado "pendiente" o "aprobada" 
+- DEV-15-4: Retornar 404 con mensaje renderizado en el frontend cuando el usuario adoptante no tiene ninguna adopción registrada en el sistema
+
+### Tareas de QA
+- QA-15-1: Diseñar matriz de datos: adopción confirmada con calendario generado, adopción en estado pendiente, usuario sin adopciones, ID de adopción inexistente
+- QA-15-2: Automatizar escenario: consulta exitosa — sistema retorna el calendario con las fechas sugeridas de vacunación
+- QA-15-3: Automatizar escenario: adopción en estado pendiente — sistema no muestra el calendario y 
+- QA-15-4: Automatizar escenario: usuario sin adopción registrada — sistema deniega el acceso con mensaje que se entienda
 
 ---
